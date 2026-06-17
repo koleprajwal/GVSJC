@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Wallet, AlertCircle, HeartHandshake, UserPlus, FileText, CreditCard, ArrowRight } from 'lucide-react';
+import { Users, Wallet, AlertCircle, HeartHandshake, UserPlus, FileText, CreditCard, ArrowRight, GraduationCap, Calendar, BookOpen } from 'lucide-react';
 
 interface DashboardStats {
   totalStudents: number;
@@ -104,9 +104,9 @@ export default function ClerkDashboard() {
 
   const quickActions = [
     { label: 'New Admission', icon: UserPlus, to: '/clerk/admissions' },
-    { label: 'Generate Bonafide', icon: FileText, to: '/clerk/bonafide' },
-    { label: 'Print ID Card', icon: CreditCard, to: '/clerk/idcard' },
-    { label: 'Collect Fee', icon: Wallet, to: '/clerk/fees' },
+    { label: 'Manage Teachers', icon: GraduationCap, to: '/clerk/teachers' },
+    { label: 'Teacher Assignments', icon: BookOpen, to: '/clerk/assignments' },
+    { label: 'Leave Requests', icon: Calendar, to: '/clerk/leaves' },
   ];
 
   return (

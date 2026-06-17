@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { Copy } from 'lucide-react';
 
 const CLASSES = ['LKG', 'UKG', ...Array.from({ length: 10 }, (_, i) => `Class ${i + 1}`)];
 
@@ -34,11 +35,14 @@ const initialFormData = {
   admission_class: '',
   date_of_admission: '',
   current_class: '',
+  email: '',
+  password: '',
 };
 
 export default function Admissions() {
   const [formData, setFormData] = useState(initialFormData);
   const [loading, setLoading] = useState(false);
+  const [credentialsModal, setCredentialsModal] = useState<{ show: boolean; studentId: string; email: string; password: string; name: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -57,13 +61,22 @@ export default function Admissions() {
 
   const combine = (...parts: string[]) => parts.filter(Boolean).join(' ').trim();
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard!');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    const studentName = combine(formData.fname, formData.mname, formData.lname);
+
     const payload = {
       student_id: formData.student_id,
-      name: combine(formData.fname, formData.mname, formData.lname),
+      password: formData.password,
+      email: formData.email,
+      name: studentName,
       mother_name: combine(formData.mother_fname, formData.mother_mname, formData.mother_lname),
       father_name: combine(formData.father_fname, formData.father_mname, formData.father_lname),
       nationality: formData.nationality,
@@ -90,6 +103,13 @@ export default function Admissions() {
       toast.error(error.message || 'Error submitting admission');
     } else {
       toast.success('Admission recorded successfully!');
+      setCredentialsModal({
+        show: true,
+        studentId: formData.student_id,
+        email: formData.email,
+        password: formData.password,
+        name: studentName,
+      });
       setFormData(initialFormData);
     }
     setLoading(false);
@@ -99,17 +119,27 @@ export default function Admissions() {
   const labelClass = "text-sm font-medium text-gray-700";
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-left">
       <div>
         <h1 className="text-3xl font-bold font-display text-gray-900">New Student Admission</h1>
         <p className="text-gray-500 mt-1">Fill in the student details to record a new admission.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-        {/* Student ID */}
-        <div className="max-w-xs">
-          <Label className={labelClass}>Student ID *</Label>
-          <Input name="student_id" value={formData.student_id} onChange={handleChange} required placeholder="e.g., STU-2025-001" className="mt-1" />
+        {/* Credentials */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <Label className={labelClass}>Student ID (Username) *</Label>
+            <Input name="student_id" value={formData.student_id} onChange={handleChange} required placeholder="e.g., STU-2025-001" className="mt-1" />
+          </div>
+          <div>
+            <Label className={labelClass}>Login Email *</Label>
+            <Input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="e.g., student@school.com" className="mt-1" />
+          </div>
+          <div>
+            <Label className={labelClass}>Login Password *</Label>
+            <Input type="text" name="password" value={formData.password} onChange={handleChange} required placeholder="e.g., password123" className="mt-1" />
+          </div>
         </div>
 
         {/* Student Name */}
@@ -210,6 +240,54 @@ export default function Admissions() {
           </Button>
         </div>
       </form>
+
+      {/* Credentials Modal */}
+      {credentialsModal?.show && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-scale-up text-center relative border-t-8 border-emerald-500">
+            <h3 className="text-2xl font-bold text-gray-900">Admission Recorded!</h3>
+            <p className="text-sm text-gray-500">
+              The credentials for <span className="font-semibold text-emerald-700">{credentialsModal.name}</span> have been generated successfully.
+            </p>
+
+            <div className="bg-slate-50 p-4 rounded-xl border space-y-3 text-left">
+              <div className="flex justify-between items-center">
+                <div>
+                  <span className="text-xs font-semibold text-gray-400 uppercase">Student ID (Username)</span>
+                  <p className="font-mono text-sm font-bold text-gray-800">{credentialsModal.studentId}</p>
+                </div>
+                <button onClick={() => copyToClipboard(credentialsModal.studentId)} className="text-gray-400 hover:text-gray-600 p-1.5 hover:bg-slate-100 rounded">
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div>
+                  <span className="text-xs font-semibold text-gray-400 uppercase">Login Email</span>
+                  <p className="font-mono text-sm font-bold text-gray-800">{credentialsModal.email}</p>
+                </div>
+                <button onClick={() => copyToClipboard(credentialsModal.email)} className="text-gray-400 hover:text-gray-600 p-1.5 hover:bg-slate-100 rounded">
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div>
+                  <span className="text-xs font-semibold text-gray-400 uppercase">Portal Password</span>
+                  <p className="font-mono text-sm font-bold text-gray-800">{credentialsModal.password}</p>
+                </div>
+                <button onClick={() => copyToClipboard(credentialsModal.password)} className="text-gray-400 hover:text-gray-600 p-1.5 hover:bg-slate-100 rounded">
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <Button onClick={() => setCredentialsModal(null)} className="w-full bg-emerald-600 hover:bg-emerald-700">
+              Done & Close
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

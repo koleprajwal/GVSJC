@@ -56,6 +56,19 @@ import ClerkNotices from "./pages/clerk/Notices";
 import ClerkApplications from "./pages/clerk/Applications";
 import ClerkQueries from "./pages/clerk/Queries";
 import ClerkFeedback from "./pages/clerk/Feedback";
+import ClerkTeachers from "./pages/clerk/Teachers";
+import ClerkLeaves from "./pages/clerk/Leaves";
+import ClerkTeacherAssignments from "./pages/clerk/TeacherAssignments";
+
+// Student Portal
+import StudentLayout from "./components/student/StudentLayout";
+import StudentProtectedRoute from "./components/student/StudentProtectedRoute";
+import StudentDashboard from "./pages/student/Dashboard";
+
+// Teacher Portal
+import TeacherLayout from "./components/teacher/TeacherLayout";
+import TeacherProtectedRoute from "./components/teacher/TeacherProtectedRoute";
+import TeacherDashboard from "./pages/teacher/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -111,6 +124,8 @@ const App = () => (
                   <Route index element={<ClerkDashboard />} />
                   <Route path="admissions" element={<ClerkAdmissions />} />
                   <Route path="enrollment" element={<ClerkEnrollment />} />
+                  <Route path="teachers" element={<ClerkTeachers />} />
+                  <Route path="assignments" element={<ClerkTeacherAssignments />} />
                   <Route path="exams" element={<ClerkExams />} />
                   <Route path="fees" element={<ClerkFeeCollection />} />
                   <Route path="bonafide" element={<ClerkBonafide />} />
@@ -121,6 +136,34 @@ const App = () => (
                   <Route path="applications" element={<ClerkApplications />} />
                   <Route path="queries" element={<ClerkQueries />} />
                   <Route path="feedback" element={<ClerkFeedback />} />
+                  <Route path="leaves" element={<ClerkLeaves />} />
+                </Route>
+              </Route>
+
+              {/* Student Portal Routes */}
+              <Route path="/student" element={<StudentProtectedRoute />}>
+                <Route element={<StudentLayout />}>
+                  <Route index element={<StudentDashboard />} />
+                  <Route path="marks" element={<StudentDashboard />} />
+                  <Route path="fees" element={<StudentDashboard />} />
+                  <Route path="homework" element={<StudentDashboard />} />
+                  <Route path="resources" element={<StudentDashboard />} />
+                  <Route path="idcard" element={<StudentDashboard />} />
+                  <Route path="leaves" element={<StudentDashboard />} />
+                </Route>
+              </Route>
+
+              {/* Teacher Portal Routes */}
+              <Route path="/teacher" element={<TeacherProtectedRoute />}>
+                <Route element={<TeacherLayout />}>
+                  <Route index element={<TeacherDashboard />} />
+                  <Route path="students" element={<TeacherDashboard />} />
+                  <Route path="attendance" element={<TeacherDashboard />} />
+                  <Route path="marks" element={<TeacherDashboard />} />
+                  <Route path="homework" element={<TeacherDashboard />} />
+                  <Route path="resources" element={<TeacherDashboard />} />
+                  <Route path="student-leaves" element={<TeacherDashboard />} />
+                  <Route path="leaves" element={<TeacherDashboard />} />
                 </Route>
               </Route>
 

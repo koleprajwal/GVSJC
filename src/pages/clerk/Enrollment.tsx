@@ -17,6 +17,7 @@ interface Student {
   parent_name: string;
   parent_phone: string;
   email: string;
+  password?: string;
   dob: string;
   nationality: string;
   mother_tongue: string;
@@ -37,7 +38,7 @@ interface Student {
 
 const emptyStudent: Omit<Student, 'id'> = {
   student_id: '', name: '', class: '', roll_no: '', parent_name: '', parent_phone: '',
-  email: '', dob: '', nationality: 'Indian', mother_tongue: '', religion: '', caste: '',
+  email: '', password: 'student123', dob: '', nationality: 'Indian', mother_tongue: '', religion: '', caste: '',
   sub_caste: '', father_name: '', mother_name: '', place_of_birth: '', taluka: '',
   district: '', city: '', state: '', admission_class: '', date_of_admission: '', previous_school: '',
 };
@@ -128,7 +129,7 @@ export default function Enrollment() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  {['Roll No', 'Name', 'Class', 'Parent', 'Contact', 'Email', 'Actions'].map((h) => (
+                  {['Roll No', 'Name', 'Class', 'Parent', 'Contact', 'Email', 'Password', 'Actions'].map((h) => (
                     <th key={h} className="text-left px-4 py-3 text-gray-600 font-medium">{h}</th>
                   ))}
                 </tr>
@@ -142,6 +143,7 @@ export default function Enrollment() {
                     <td className="px-4 py-3">{s.parent_name}</td>
                     <td className="px-4 py-3">{s.parent_phone}</td>
                     <td className="px-4 py-3 text-gray-500">{s.email}</td>
+                    <td className="px-4 py-3 text-gray-500 font-mono text-xs">{s.password || 'student123'}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
                         <button onClick={() => handleEdit(s)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded"><Pencil className="w-4 h-4" /></button>
@@ -185,7 +187,8 @@ export default function Enrollment() {
                   </select>
                 </div>
                 <div><Label className={labelClass}>Roll No</Label><Input name="roll_no" value={formData.roll_no} onChange={handleChange} className="mt-1" /></div>
-                <div><Label className={labelClass}>Email</Label><Input type="email" name="email" value={formData.email} onChange={handleChange} className="mt-1" /></div>
+                <div><Label className={labelClass}>Email *</Label><Input type="email" name="email" value={formData.email} onChange={handleChange} required className="mt-1" /></div>
+                <div><Label className={labelClass}>Portal Password *</Label><Input name="password" value={formData.password || ''} onChange={handleChange} required className="mt-1" /></div>
                 <div><Label className={labelClass}>Religion</Label><Input name="religion" value={formData.religion} onChange={handleChange} className="mt-1" /></div>
                 <div><Label className={labelClass}>Caste</Label><Input name="caste" value={formData.caste} onChange={handleChange} className="mt-1" /></div>
                 <div><Label className={labelClass}>Mother Tongue</Label><Input name="mother_tongue" value={formData.mother_tongue} onChange={handleChange} className="mt-1" /></div>

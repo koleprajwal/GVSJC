@@ -186,84 +186,20 @@ export default function FacultyManager() {
   );
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-left">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-3xl font-bold font-display text-gray-900">Faculty Manager</h1>
-          <p className="text-gray-500 mt-1">Manage faculty members shown on the public website.</p>
+          <p className="text-gray-500 mt-1">View faculty members. Managed by Clerk.</p>
         </div>
-        <Button onClick={openAdd} className="bg-emerald-600 hover:bg-emerald-700 w-fit">
-          <Plus className="w-4 h-4 mr-2" /> Add Faculty
-        </Button>
+        <div className="flex items-center gap-2">
+          <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">Read-only view</span>
+        </div>
       </div>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
         <Input placeholder="Search by name or role…" value={search} onChange={(e) => setSearch(e.target.value)} className="max-w-sm" />
       </div>
-
-      {/* Add / Edit Form */}
-      {showForm && (
-        <div className="bg-white p-6 rounded-xl border-2 border-emerald-200 shadow-md space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">{editId ? 'Edit' : 'Add'} Faculty Member</h2>
-            <button onClick={() => setShowForm(false)}><X className="w-5 h-5 text-gray-400" /></button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="sm:col-span-2">
-              <Label className="text-sm font-medium text-gray-700">Full Name *</Label>
-              <input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className={cls} placeholder="Hon. Shri. Pravin Mali" />
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Initials</Label>
-              <input value={form.initials} onChange={(e) => setForm((p) => ({ ...p, initials: e.target.value.slice(0, 2).toUpperCase() }))} className={cls} placeholder="PM" maxLength={2} />
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Role / Designation</Label>
-              <input value={form.role ?? ''} onChange={(e) => setForm((p) => ({ ...p, role: e.target.value }))} className={cls} placeholder="Principal" />
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Qualifications</Label>
-              <input value={form.qual ?? ''} onChange={(e) => setForm((p) => ({ ...p, qual: e.target.value }))} className={cls} placeholder="M.Ed., B.Ed." />
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Experience</Label>
-              <input value={form.exp ?? ''} onChange={(e) => setForm((p) => ({ ...p, exp: e.target.value }))} className={cls} placeholder="12 years" />
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-gray-700">Display Order</Label>
-              <input type="number" value={form.display_order} onChange={(e) => setForm((p) => ({ ...p, display_order: Number(e.target.value) }))} className={cls} />
-            </div>
-
-            {/* Photo Upload */}
-            <div className="sm:col-span-2">
-              <Label className="text-sm font-medium text-gray-700">Photo</Label>
-              <PhotoUploader
-                value={form.photo_url}
-                onChange={(url) => setForm((p) => ({ ...p, photo_url: url }))}
-                bucket={BUCKET}
-                folder="faculty"
-              />
-            </div>
-
-            {/* Card Color */}
-            <div className="sm:col-span-2 lg:col-span-3">
-              <Label className="text-sm font-medium text-gray-700">Card Color (shown when no photo)</Label>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {COLORS.map((c) => (
-                  <button key={c} type="button" onClick={() => setForm((p) => ({ ...p, color: c }))}
-                    className={`w-8 h-8 rounded-lg bg-gradient-to-br ${c} border-2 transition-all ${form.color === c ? 'border-gray-900 scale-110 shadow-md' : 'border-transparent'}`} />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={handleSave} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
-              <Check className="w-4 h-4 mr-2" /> {saving ? 'Saving…' : 'Save'}
-            </Button>
-            <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
-          </div>
-        </div>
-      )}
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
@@ -276,8 +212,8 @@ export default function FacultyManager() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['#', 'Photo', 'Name', 'Role', 'Qualification', 'Experience', 'Actions'].map((h) => (
-                    <th key={h} className={`px-4 py-3 font-semibold text-gray-600 ${h === 'Actions' ? 'text-right' : 'text-left'}`}>{h}</th>
+                  {['#', 'Photo', 'Name', 'Role', 'Qualification', 'Experience'].map((h) => (
+                    <th key={h} className="px-4 py-3 font-semibold text-gray-600 text-left">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -298,19 +234,6 @@ export default function FacultyManager() {
                     <td className="px-4 py-3 text-gray-600">{f.role ?? <span className="italic text-gray-300">—</span>}</td>
                     <td className="px-4 py-3 text-gray-600 max-w-[180px] truncate">{f.qual ?? '—'}</td>
                     <td className="px-4 py-3 text-gray-600">{f.exp ?? '—'}</td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => openEdit(f)} className="text-blue-500 hover:text-blue-700 p-1 rounded hover:bg-blue-50"><Pencil className="w-4 h-4" /></button>
-                        {deleteId === f.id ? (
-                          <span className="flex items-center gap-1 text-xs">
-                            <button onClick={() => handleDelete(f.id)} className="text-red-600 font-semibold hover:underline">Confirm</button>
-                            <button onClick={() => setDeleteId(null)} className="text-gray-400 hover:underline">Cancel</button>
-                          </span>
-                        ) : (
-                          <button onClick={() => setDeleteId(f.id)} className="text-red-400 hover:text-red-600 p-1 rounded hover:bg-red-50"><Trash2 className="w-4 h-4" /></button>
-                        )}
-                      </div>
-                    </td>
                   </tr>
                 ))}
               </tbody>

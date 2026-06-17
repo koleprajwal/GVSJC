@@ -9,8 +9,7 @@ import { BellRing, FileText, Activity } from 'lucide-react';
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { data: noticesData = [], isLoading: noticesLoading } = useNotices();
-  const notices = noticesData ?? [];
+  const { notices = [], isLoading: noticesLoading } = useNotices();
 
   const { data: queriesData = [], isLoading: queriesLoading } = useQueries();
   const queries = queriesData ?? [];
